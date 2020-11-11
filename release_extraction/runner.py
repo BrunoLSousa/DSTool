@@ -64,9 +64,10 @@ class Runner:
             print("------------------------ Building the release " + str(release_number) + " out of " + str(len(time_frames)) + " ------------------------\n")
 
             release_dir = self.create_release(time_frames[key], clone_project_dir, project_path, release_number)
+            name_project = (project_path.rsplit("/", 1)[1]) if not project_path.endswith('/') else (project_path.rsplit("/", 2)[1])
 
             logger = Logger()
-            logger.release_time_frame(time_frames[key]["since"].strftime("%Y-%m-%d %H:%M:%S"), time_frames[key]["until"].strftime("%Y-%m-%d %H:%M:%S"), release_dir, "timeframe.log")
+            logger.release_time_frame(time_frames[key]["since"].strftime("%Y-%m-%d %H:%M:%S"), time_frames[key]["until"].strftime("%Y-%m-%d %H:%M:%S"), project_path, (name_project + " - timeframe.log"), release_number)
 
             print("\nRelease built!!!\n")
 
