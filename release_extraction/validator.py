@@ -5,8 +5,8 @@ import os
 
 class Validator:
 
-    def __init__(self):
-        self.auth_github = ""
+    def __init__(self, github_token):
+        self.auth_github = github_token
 
     def validate_repository_name(self, repository):
         g = Github(self.auth_github)
@@ -37,27 +37,3 @@ class Validator:
             print("Directory not found!!!")
             return False
         return True
-
-# if __name__ == '__main__':
-
-    # validate number of input args
-
-    # val = Validator()
-    # print(val.validate_repository_name("PyGithub/PyGithu"))
-
-    # a = "d"
-
-    # print(val.validate_output_path("/home/bruno/Área de Trabalho"))
-
-    # try:
-    #     repo = g.get_repo("PyGithub/PyGithu")
-    # except Exception as e:
-    #     print("Repository not found. Check if its name is correct!!!")
-    #     return False
-    # return True
-
-
-    # args = str(sys.argv)
-    # if len(args) != 4:
-    #     print("Usage python3 runner.py <repository name on GitHub> <time frame of each release in days, 0=automatic selection (14 days)> <path to save the output files>")
-    # else:
