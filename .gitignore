@@ -1,4 +1,5 @@
 /release_extraction/__pycache__/
+/release_extraction/config/ConfigFile.properties
 /release_extraction/teste.py
 /release_extraction_old/
 /release_extraction_backup/
