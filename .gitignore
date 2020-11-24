@@ -4,3 +4,6 @@
 /release_extraction_old/
 /release_extraction_backup/
 /collect_metrics/ck_old.jar
+/collect_metrics/extractMetrics_old.sh
+/collect_metrics/recollect.sh
+/collect_metrics/teste.sh
