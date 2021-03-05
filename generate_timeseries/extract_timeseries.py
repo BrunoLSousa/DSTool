@@ -1,7 +1,5 @@
 #extract_timeseries.py
 
-# from github import Github
-# from datetime import datetime, timedelta, timezone
 import sys
 import csv
 import os
@@ -66,19 +64,19 @@ def export_timeseries(metric, column_index, releases, timeseries_output, metric_
 
 
 
-def generate_timeseries(input, versions, output):
+def generate_timeseries(input, output):
 
-    # results = dict()
-    # metrics = ["cbo", "fanin", "fanout", "dit", "noc", "lcom", "noa", "nom"]
-    metrics = ["cbo", "fanin", "fanout", "wmc", "dit", "noc", "rfc", "lcom", "tcc", "lcc", "totalMethodsQty", "staticMethodsQty", "publicMethodsQty", "privateMethodsQty", "protectedMethodsQty", "defaultMethodsQty", "abstractMethodsQty", "finalMethodsQty", "synchronizedMethodsQty", "totalFieldsQty", "staticFieldsQty", "publicFieldsQty", "privateFieldsQty", "protectedFieldsQty", "defaultFieldsQty", "visibleFieldsQty", "finalFieldsQty", "synchronizedFieldsQty", "nosi", "loc", "returnQty", "loopQty", "comparisonsQty", "tryCatchQty", "parenthesizedExpsQty", "stringLiteralsQty", "numbersQty", "assignmentsQty", "mathOperationsQty", "variablesQty", "maxNestedBlocksQty", "anonymousClassesQty", "innerClassesQty", "lambdasQty", "uniqueWordsQty", "modifiers", "logStatementsQty"]
-    # indexColuns = [4, 5, 6, 8, 9, 12, 24, 15]
-    indexColuns = [4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
+    metrics_index = get_metrics(input)
+    metrics = metrics_index['metrics']
+    indexColuns = metrics_index['index']
+
+    number_releases = get_release_numbers(input)
 
     print("---------------------------------- Starting the process of reading and exporting of the project timeseries release ----------------------------------\n")
 
     for i in list(range(len(indexColuns))):
         
-        metric_data = read_metric_values(metrics[i], indexColuns[i], versions, input)
+        metric_data = read_metric_values(metrics[i], indexColuns[i], number_releases, input)
 
         name_project = input.rsplit("/", 1)[1] if not input.endswith('/') else input.rsplit("/", 2)[1]
         timeseries_output = output + "/" + name_project + "/" if not input.endswith('/') else output + name_project + "/"
@@ -86,16 +84,51 @@ def generate_timeseries(input, versions, output):
         if not os.path.exists(timeseries_output):
                 os.makedirs(timeseries_output)
 
-        export_timeseries(metrics[i], indexColuns[i], versions, timeseries_output, metric_data)
+        export_timeseries(metrics[i], indexColuns[i], number_releases, timeseries_output, metric_data)
 
     print("\nTime series generation completed!")
 
 
 
+def get_release_numbers(input):
+    number_releases = 0
+    for f in os.listdir(input):
+        if "_" not in f:
+            number_releases = number_releases + 1
+    
+    return number_releases
+
+
+
+def get_metrics(input):
+    metrics_index = dict()
+    metrics = []
+    index = []
+
+    input = input + "/1/class.csv" if not input.endswith('/') else input + "1/class.csv"
+
+    columns = ""
+    with open(input, 'r') as csv_file:
+        d_reader = csv.DictReader(csv_file)
+        columns = d_reader.fieldnames
+
+    count = 0
+    for c in columns:
+        if(c != 'file' and c != 'class' and c != 'type'):
+            metrics.append(c)
+            index.append(count)
+        
+        count = count + 1
+    
+    metrics_index["metrics"] = metrics
+    metrics_index["index"] = index
+    return metrics_index
+
+
 if __name__ == '__main__':
     args = sys.argv
 
-    if len(args) != 4:
-        print("Usage python3 extract_timeseries.py <directory of the versions with system metrics> <nº of versions> <path to save the output files>")
+    if len(args) != 3:
+        print("Usage python3 extract_timeseries.py <directory of the versions with system metrics> <path to save the output files>")
     else:
-        generate_timeseries(args[1], args[2], args[3])
+        generate_timeseries(args[1], args[2])
