@@ -24,7 +24,7 @@ config.token = d1a3419f5fc17376a6cacbb2a28c6c923cadb9f7
 `Config token` is a personal access token that have to be generated on the GitHub platform. This token is individual and must not be shared with other people. 
 
 
-## Module 2 - Metric Collection
+## Module 2 - Metrics Collection
 
 To run the second module of the tool for measuring the bi-week releases extracted in the first module, it is necessary run the shell script existing in the `collect_metric` folder. To run this module, it is required the following command:
 
